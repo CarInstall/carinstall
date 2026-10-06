@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarInstall - Admin Giriş Testi</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 680px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f5f5f5;
+  }
+  .card {
+    background: white;
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+  h1 { margin-top: 0; }
+  label { display:block; margin-top:16px; font-weight:bold; }
+  input {
+    width:100%;
+    box-sizing:border-box;
+    padding:13px;
+    margin-top:7px;
+    font-size:16px;
+    border:1px solid #bbb;
+    border-radius:8px;
+  }
+  button {
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    font-size:17px;
+    border:0;
+    border-radius:8px;
+    background:#111;
+    color:white;
+    cursor:pointer;
+  }
+  button:disabled { opacity:.6; }
+  #result {
+    margin-top:20px;
+    padding:15px;
+    border-radius:10px;
+    background:#f0f0f0;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .info { color:#555; font-size:14px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>CarInstall Admin Giriş Testi</h1>
+  <p class="info">
+    Bu sayfa sadece Worker'ın /api/login endpointini test eder.
+    Şifreniz bu sayfada saklanmaz.
+  </p>
+
+  <label for="username">Kullanıcı adı</label>
+  <input id="username" value="admin" autocomplete="username">
+
+  <label for="password">Şifre</label>
+  <input id="password" type="password" autocomplete="current-password">
+
+  <button id="loginBtn">Giriş Testi</button>
+
+  <div id="result">Hazır.</div>
+</div>
+
+<script>
+const WORKER_URL = "https://nameless-darkness-1b75.mahmutfezlek.workers.dev";
+
+const btn = document.getElementById("loginBtn");
+const result = document.getElementById("result");
+
+btn.addEventListener("click", async () => {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!username || !password) {
+    result.textContent = "Kullanıcı adı ve şifreyi girin.";
+    return;
+  }
+
+  btn.disabled = true;
+  result.textContent = "Worker'a bağlanılıyor...";
+
+  try {
+    const response = await fetch(WORKER_URL + "/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username, password })
+    });
+
+    const text = await response.text();
+
+    let formatted = text;
+    try {
+      formatted = JSON.stringify(JSON.parse(text), null, 2);
+    } catch (_) {}
+
+    result.textContent = "HTTP " + response.status + "\n\n" + formatted;
+  } catch (error) {
+    result.textContent =
+      "İstek gönderilemedi.\n\n" +
+      "Hata: " + error.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
