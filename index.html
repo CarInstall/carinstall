@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarInstall</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080d18;color:#eef3ff;font-family:Arial,sans-serif}
+.wrap{max-width:820px;margin:auto;padding:15px}.hero{padding:20px;border-radius:20px;background:linear-gradient(135deg,#172554,#0f172a);margin-bottom:12px}
+.logo{font-size:30px;font-weight:800}.sub{color:#aebbd5;margin-top:5px}
+.card{background:#111a2d;border:1px solid #293957;border-radius:17px;padding:15px;margin:11px 0}
+h3{margin:4px 0 13px}.status{display:flex;gap:9px;align-items:center}.dot{width:11px;height:11px;border-radius:50%;background:#ef4444}.dot.ok{background:#22c55e}
+button{border:0;border-radius:11px;padding:13px;width:100%;margin:5px 0;font-weight:700;font-size:15px;color:#fff;background:#263657}button.primary{background:#2563eb}button.green{background:#16a34a}button.red{background:#dc2626}button:disabled{opacity:.42}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.box{background:#0a1222;border-radius:10px;padding:10px}.label{font-size:11px;color:#8292b4}.val{font-weight:700;margin-top:4px;word-break:break-word}
+input,select{width:100%;background:#0a1222;border:1px solid #354667;border-radius:10px;color:#fff;padding:12px;margin:4px 0 8px}
+input[type=file]{display:none}.file{border:2px dashed #3b4e78;border-radius:13px;padding:18px;text-align:center;cursor:pointer}.file b{display:block;margin-top:7px;word-break:break-all}
+.check{display:flex;align-items:center;gap:8px;color:#c0cbe0;font-size:13px;margin:8px 0}.check input{width:auto;margin:0}
+.progress{height:12px;background:#263657;border-radius:10px;overflow:hidden}.bar{height:100%;width:0;background:#22c55e;transition:.2s}
+.log{background:#060a11;border-radius:11px;padding:12px;min-height:130px;max-height:280px;overflow:auto;white-space:pre-wrap;font:12px monospace;color:#c4d0e8}
+.small{font-size:12px;line-height:1.5;color:#94a3bf}.ok{background:#0d2a1a;padding:11px;border-radius:10px;color:#91f0ae;display:none}.err{background:#351317;padding:11px;border-radius:10px;color:#ffadb5;display:none}
+@media(max-width:500px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+
+<div class="hero"><div class="logo">🚗 CarInstall</div><div class="sub">Chery / Omoda • WebADB APK Installer</div></div>
+
+<div class="card">
+<h3>🔌 Bağlantı</h3>
+<div class="status"><span id="dot" class="dot"></span><b id="status">Cihaz bağlı değil</b></div>
+<button id="connect" class="primary">Cihaza Bağlan</button>
+<button id="disconnect" class="red" disabled>Bağlantıyı Kes</button>
+<button id="authorized">Yetkili Cihazları Listele</button>
+<button id="wifi">Wi-Fi ADB Durumunu Kontrol Et</button>
+<div class="small">Chrome/Edge ve HTTPS/localhost gereklidir. İlk bağlantıda Android RSA yetkilendirmesi istenebilir.</div>
+</div>
+
+<div class="card">
+<h3>🚘 Araç Bilgileri</h3>
+<div class="row">
+<div class="box"><div class="label">Model</div><div id="model" class="val">-</div></div>
+<div class="box"><div class="label">Android</div><div id="android" class="val">-</div></div>
+<div class="box"><div class="label">ABI</div><div id="abi" class="val">-</div></div>
+<div class="box"><div class="label">SDK</div><div id="sdk" class="val">-</div></div>
+</div>
+</div>
+
+<div class="card">
+<h3>📦 APK Kur</h3>
+<label class="file" for="apk">📁 APK Seç<input id="apk" type="file" accept=".apk,application/vnd.android.package-archive"><b id="filename">Dosya seçilmedi</b></label>
+<input id="package" placeholder="Paket adı (isteğe bağlı), örn. com.example.app">
+<label class="check"><input id="downgrade" type="checkbox"> Daha düşük sürüme izin ver (-d)</label>
+<label class="check"><input id="replace" type="checkbox" checked> Kurulu uygulamayı güncelle (-r)</label>
+<label class="check"><input id="uninstall" type="checkbox"> Önce uygulamayı kaldır, sonra kur</label>
+<button id="install" class="green" disabled>⬆️ APK'yı Araca Gönder ve Kur</button>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="pt" class="small">Hazır</div><div id="ok" class="ok">✅ Kurulum başarıyla tamamlandı.</div><div id="err" class="err"></div>
+</div>
+
+<div class="card">
+<h3>⚙️ İzin Verme</h3>
+<input id="grantPackage" placeholder="Paket adı, örn. com.example.app">
+<input id="permission" placeholder="İzin, örn. android.permission.WRITE_SECURE_SETTINGS">
+<button id="grant">İzni Ver</button>
+<div class="small">Bazı sistem izinleri Android tarafından normal uygulamalara verilmeyebilir.</div>
+</div>
+
+<div class="card">
+<h3>⌨️ ADB Shell</h3>
+<input id="shellCmd" value="getprop ro.product.model">
+<button id="shellRun">Çalıştır</button>
+<div id="shellOut" class="log" style="min-height:50px"></div>
+</div>
+
+<div class="card">
+<h3>📋 Log</h3><div id="log" class="log">CarInstall hazır.</div>
+</div>
+
+<div class="card small">
+<b>Uyarı:</b> Bu araç yalnızca kullanıcının yetkilendirdiği ADB cihazında çalıştırılmalıdır. Araç üreticisinin garanti ve güvenlik koşullarını kontrol edin.
+</div>
+</div>
+
+<script type="module">
+let transport=null,adb=null,file=null;
+const $=x=>document.getElementById(x);
+function log(x){$("log").textContent+="\n"+new Date().toLocaleTimeString()+"  "+x;$("log").scrollTop=$("log").scrollHeight}
+function status(x,ok=false){$("status").textContent=x;$("dot").className="dot"+(ok?" ok":"")}
+function prog(p,t){$("bar").style.width=p+"%";$("pt").textContent=t}
+function clearMsg(){$("ok").style.display="none";$("err").style.display="none"}
+function err(x){$("err").textContent="❌ "+x;$("err").style.display="block"}
+async function shell(cmd){
+ if(!adb)throw Error("ADB bağlantısı yok");
+ const s=await adb.createShell(cmd),r=s.getReader();let out="";
+ while(true){let q=await r.read();if(q.done)break;if(q.value)out+=new TextDecoder().decode(q.value)}
+ return out.trim()
+}
+async function connect(){
+ try{
+  $("connect").disabled=true;clearMsg();status("Bağlanıyor...");log("WebADB bağlantısı başlatılıyor...");
+  const m=await import("https://cdn.jsdelivr.net/gh/webadb/webadb.js@master/webadb.js");
+  const A=m.default||m.Adb||m;
+  transport=await A.open("WebUSB");adb=await transport.connectAdb("host::");
+  status("Araç bağlı",true);$("disconnect").disabled=false;$("install").disabled=!file;log("ADB bağlantısı kuruldu.");
+  for(const [id,c] of [["model","getprop ro.product.model"],["android","getprop ro.build.version.release"],["abi","getprop ro.product.cpu.abilist"],["sdk","getprop ro.build.version.sdk"]]){try{$(id).textContent=await shell(c)}catch{}}
+ }catch(e){status("Bağlantı kurulamadı");$("connect").disabled=false;log("Hata: "+e.message)}
+}
+async function disconnect(){
+ try{if(adb?.close)await adb.close();if(transport?.close)await transport.close()}catch{}
+ adb=null;transport=null;status("Cihaz bağlı değil");$("connect").disabled=false;$("disconnect").disabled=true;$("install").disabled=true;log("Bağlantı kapatıldı.")
+}
+$("connect").onclick=connect;$("disconnect").onclick=disconnect;
+$("authorized").onclick=async()=>{if(!adb){log("Önce bağlanın.");return}try{log(await shell("adb devices 2>/dev/null || echo authorized-device"))}catch(e){log("Yetkili cihaz sorgusu: "+e.message)}};
+$("wifi").onclick=async()=>{if(!adb){log("Önce bağlanın.");return}try{log("Wi-Fi ADB: "+await shell("getprop service.adb.tcp.port"))}catch(e){log(e.message)}};
+$("apk").onchange=e=>{
+ clearMsg();file=e.target.files?.[0]||null;
+ if(!file){$("filename").textContent="Dosya seçilmedi";$("install").disabled=true;return}
+ if(!file.name.toLowerCase().endsWith(".apk")){file=null;$("filename").textContent="Geçersiz APK";$("install").disabled=true;return}
+ $("filename").textContent=file.name+" • "+(file.size/1048576).toFixed(2)+" MB";$("install").disabled=!adb;log("APK seçildi: "+file.name)
+};
+
+async function push(local,remote){
+ if(typeof adb.push==="function"){
+  try{await adb.push(local,remote);return}catch(e){log("push(file,path): "+e.message)}
+  try{await adb.push(new Uint8Array(await local.arrayBuffer()),remote);return}catch(e){log("push(bytes,path): "+e.message)}
+ }
+ if(typeof adb.syncService==="function"){let s=await adb.syncService();if(s?.push){await s.push(new Uint8Array(await local.arrayBuffer()),remote);return}}
+ throw Error("WebADB push API bulunamadı.")
+}
+$("install").onclick=async()=>{
+ clearMsg();if(!adb||!file)return;$("install").disabled=true;
+ try{
+  const remote="/data/local/tmp/carinstall.apk";prog(5,"Hazırlanıyor...");log("Geçici APK temizleniyor...");try{await shell("rm -f "+remote)}catch{}
+  prog(15,"APK araca gönderiliyor...");await push(file,remote);prog(70,"APK gönderildi.");log("APK aktarımı tamamlandı.");
+  let pkg=$("package").value.trim();
+  if($("uninstall").checked&&pkg){try{await shell("pm uninstall "+pkg)}catch(e){log("Uninstall uyarısı: "+e.message)}}
+  let flags=$("replace").checked?" -r":"";flags+= $("downgrade").checked?" -d":"";
+  prog(82,"Android Package Manager çalışıyor...");let result=await shell("pm install"+flags+" "+remote);
+  log("pm install: "+result);if(!/Success/i.test(result))throw Error(result||"Kurulum sonucu alınamadı.");
+  try{await shell("rm -f "+remote)}catch{}prog(100,"Tamamlandı");$("ok").style.display="block";
+ }catch(e){prog(0,"Başarısız");err(e.message||e);log("Kurulum hatası: "+(e.message||e))}finally{$("install").disabled=!adb||!file}
+};
+$("grant").onclick=async()=>{if(!adb){log("Önce bağlanın.");return}let p=$("grantPackage").value.trim(),perm=$("permission").value.trim();if(!p||!perm){log("Paket adı ve izin gerekli.");return}try{log(await shell("pm grant "+p+" "+perm))}catch(e){log("İzin hatası: "+e.message)}};
+$("shellRun").onclick=async()=>{if(!adb){$("shellOut").textContent="ADB bağlantısı yok";return}try{$("shellOut").textContent=await shell($("shellCmd").value)}catch(e){$("shellOut").textContent="Hata: "+e.message}};
+</script>
+</body></html>
