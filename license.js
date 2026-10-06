@@ -1,7 +1,7 @@
 /* CarInstall Activation Gate
    Backend URL will be filled after Cloudflare Worker is deployed.
 */
-const CARINSTALL_LICENSE_API = "https://REPLACE_WITH_WORKER_URL";
+const CARINSTALL_LICENSE_API = "https://nameless-darkness-1b75.mahmutfezlek.workers.dev";
 
 async function carInstallFingerprint(info = {}) {
   const raw = [
