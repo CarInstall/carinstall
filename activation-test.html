@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarInstall — Aktivasyon Test</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080d18;color:#eef3ff;font-family:Arial,sans-serif}
+.wrap{max-width:700px;margin:auto;padding:18px}.hero,.card{background:#111a2d;border:1px solid #293957;border-radius:18px;padding:18px;margin:12px 0}
+.hero{background:linear-gradient(135deg,#172554,#0f172a)}h1{margin:0;font-size:30px}.sub{color:#aebbd5;margin-top:7px}
+input,button{width:100%;padding:14px;border-radius:11px;margin:6px 0;font-size:15px}
+input{background:#091224;color:white;border:1px solid #394b70}button{border:0;background:#2563eb;color:white;font-weight:700}
+button:disabled{opacity:.6}.info{color:#aebbd5;font-size:13px;line-height:1.55}
+.state{padding:12px;border-radius:10px;background:#0a1222;margin-top:8px;white-space:pre-wrap}.ok{color:#8ff0aa}.err{color:#ffadb5}
+pre{white-space:pre-wrap;word-break:break-word;color:#cbd5e1;font-size:12px}
+</style>
+</head>
+<body><main class="wrap">
+<section class="hero"><h1>🚗 CarInstall</h1><div class="sub">Aktivasyon Backend Testi</div></section>
+<section class="card">
+<h2>🔐 Aktivasyon Testi</h2>
+<p class="info">Bu sayfa araç bağlantısı gerektirmez. Admin panelinden oluşturulan kodun Cloudflare Worker ve D1 sistemi üzerinden çalışıp çalışmadığını test eder.</p>
+<input id="code" placeholder="CI-XXXX-XXXX-XXXX" autocomplete="off">
+<button id="activate">Aktivasyonu Test Et</button>
+<div id="state" class="state">Hazır.</div>
+</section>
+<section class="card"><h3>Test Bilgileri</h3>
+<div class="info">Backend: <b>Cloudflare Worker</b><br>Endpoint: <b>/api/activate</b><br>Kimlik: test cihazı parmak izi</div>
+<pre id="details"></pre></section>
+</main>
+<script src="./license.js"></script>
+<script>
+const state=document.getElementById("state");
+const details=document.getElementById("details");
+const button=document.getElementById("activate");
+button.onclick=async()=>{
+  const code=document.getElementById("code").value.trim(); details.textContent="";
+  if(!code){state.className="state err";state.textContent="❌ Aktivasyon kodunu girin.";return;}
+  button.disabled=true; state.className="state"; state.textContent="⏳ Worker üzerinden kontrol ediliyor...";
+  try{
+    const testInfo={model:"CarInstall-Browser-Test",android:"Browser-Test",abi:"test",sdk:"test"};
+    const result=await carInstallActivate(code,testInfo);
+    state.className="state ok";
+    state.textContent="✅ AKTİVASYON BAŞARILI\nKod Worker tarafından kabul edildi ve test cihazına bağlandı.";
+    details.textContent="Sonuç:\n"+JSON.stringify(result,null,2)+"\n\nTest kimliği:\n"+await carInstallFingerprint(testInfo);
+  }catch(e){
+    state.className="state err"; state.textContent="❌ AKTİVASYON BAŞARISIZ\n"+e.message;
+    details.textContent="Hata:\n"+(e.stack||e.toString());
+  }finally{button.disabled=false;}
+};
+</script>
+</body></html>
