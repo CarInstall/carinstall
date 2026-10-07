@@ -1,2424 +1,1506 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<title>CarInstall V7.4</title>
+<title>CarInstall V7.5</title>
 
-<!-- WebADB normal script -->
 <script src="https://cdn.jsdelivr.net/gh/webadb/webadb.js@master/webadb.js"></script>
-
-<!-- CarInstall lisans sistemi -->
-<script src="./license.js"></script>
 
 <style>
 *{
-  box-sizing:border-box;
+    box-sizing:border-box;
 }
 
 body{
-  margin:0;
-  background:#070b14;
-  color:#f5f7fb;
-  font-family:Arial,Helvetica,sans-serif;
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#10141a;
+    color:#fff;
 }
 
-.wrap{
-  max-width:850px;
-  margin:auto;
-  padding:15px;
+header{
+    background:#171d25;
+    padding:18px;
+    text-align:center;
+    border-bottom:1px solid #303844;
 }
 
-.hero{
-  padding:25px;
-  border-radius:24px;
-  background:linear-gradient(135deg,#172554,#0f172a);
-  border:1px solid #263650;
-  margin-bottom:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.25);
+header h1{
+    margin:0;
+    font-size:28px;
 }
 
-.logo{
-  font-size:32px;
-  font-weight:900;
+header p{
+    margin:7px 0 0;
+    color:#9da8b5;
 }
 
-.sub{
-  color:#aebbd5;
-  margin-top:7px;
-  font-size:15px;
-}
-
-.version{
-  display:inline-block;
-  margin-top:14px;
-  padding:9px 15px;
-  border-radius:20px;
-  background:#183b72;
-  border:1px solid #3b82f6;
-  color:#dbeafe;
-  font-weight:800;
-  font-size:13px;
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:18px;
 }
 
 .card{
-  background:#101827;
-  border:1px solid #293957;
-  border-radius:19px;
-  padding:17px;
-  margin:13px 0;
-  box-shadow:0 8px 25px rgba(0,0,0,.18);
+    background:#181f28;
+    border:1px solid #303844;
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:16px;
 }
 
-h3{
-  margin:3px 0 15px;
-  font-size:21px;
-}
-
-.status{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  background:#080f1d;
-  border-radius:13px;
-  padding:14px;
-  margin-bottom:10px;
-  font-size:18px;
-}
-
-.dot{
-  width:13px;
-  height:13px;
-  border-radius:50%;
-  background:#ef4444;
-  flex:none;
-}
-
-.dot.ok{
-  background:#22c55e;
-  box-shadow:0 0 12px #22c55e;
+.card h2{
+    margin-top:0;
+    font-size:20px;
 }
 
 button{
-  border:0;
-  border-radius:12px;
-  padding:14px;
-  width:100%;
-  margin:5px 0;
-  font-weight:800;
-  font-size:15px;
-  color:#fff;
-  background:#263657;
-  cursor:pointer;
+    width:100%;
+    border:0;
+    border-radius:10px;
+    padding:14px;
+    margin-top:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-button.primary{
-  background:#2563eb;
+.primary{
+    background:#1677ff;
+    color:white;
 }
 
-button.green{
-  background:#16a34a;
+.success{
+    background:#16834b;
+    color:white;
 }
 
-button.red{
-  background:#dc2626;
+.warning{
+    background:#d58a00;
+    color:white;
+}
+
+.danger{
+    background:#c43d3d;
+    color:white;
+}
+
+.secondary{
+    background:#303946;
+    color:white;
 }
 
 button:disabled{
-  opacity:.4;
+    opacity:.45;
+    cursor:not-allowed;
 }
 
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
 }
 
-.box{
-  background:#0a1222;
-  border-radius:11px;
-  padding:12px;
-  min-height:65px;
+.info{
+    background:#10151b;
+    border-radius:9px;
+    padding:12px;
 }
 
 .label{
-  font-size:11px;
-  color:#8292b4;
+    font-size:12px;
+    color:#8e99a6;
 }
 
-.val{
-  font-weight:800;
-  margin-top:5px;
-  word-break:break-word;
+.value{
+    margin-top:4px;
+    font-weight:bold;
+    word-break:break-word;
 }
 
-input,
-select{
-  width:100%;
-  background:#080f1d;
-  border:1px solid #354667;
-  border-radius:11px;
-  color:#fff;
-  padding:13px;
-  margin:4px 0 8px;
-  font-size:14px;
+input,select,textarea{
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #3a4350;
+    background:#0e1318;
+    color:white;
+    margin-top:7px;
 }
 
-input::placeholder{
-  color:#687795;
-}
-
-input[type=file]{
-  display:none;
-}
-
-.file{
-  display:block;
-  border:2px dashed #3b4e78;
-  border-radius:14px;
-  padding:20px;
-  text-align:center;
-  cursor:pointer;
-  background:#0b1323;
-}
-
-.file b{
-  display:block;
-  margin-top:8px;
-  word-break:break-all;
-}
-
-.check{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:#c0cbe0;
-  font-size:13px;
-  margin:9px 0;
-}
-
-.check input{
-  width:auto;
-  margin:0;
-}
-
-.progress{
-  height:12px;
-  background:#263657;
-  border-radius:10px;
-  overflow:hidden;
-  margin-top:10px;
-}
-
-.bar{
-  height:100%;
-  width:0;
-  background:#22c55e;
-  transition:.2s;
+textarea{
+    min-height:150px;
+    resize:vertical;
+    font-family:monospace;
 }
 
 .log{
-  background:#05080e;
-  border-radius:12px;
-  padding:13px;
-  min-height:150px;
-  max-height:320px;
-  overflow:auto;
-  white-space:pre-wrap;
-  font:12px monospace;
-  color:#c4d0e8;
+    background:#080b0e;
+    color:#b9f7c9;
+    border-radius:9px;
+    padding:12px;
+    min-height:180px;
+    max-height:350px;
+    overflow:auto;
+    font-family:monospace;
+    font-size:12px;
+    white-space:pre-wrap;
+}
+
+.status{
+    padding:10px;
+    border-radius:8px;
+    background:#10151b;
+    margin-top:10px;
+}
+
+.apk{
+    border:1px solid #343e4b;
+    border-radius:10px;
+    padding:14px;
+    margin-top:10px;
+}
+
+.apk-title{
+    font-weight:bold;
+    font-size:17px;
+}
+
+.apk-desc{
+    color:#9da8b5;
+    margin-top:5px;
+    font-size:13px;
 }
 
 .small{
-  font-size:12px;
-  line-height:1.55;
-  color:#94a3bf;
+    font-size:12px;
+    color:#8e99a6;
 }
 
-.ok{
-  background:#0d2a1a;
-  padding:11px;
-  border-radius:10px;
-  color:#91f0ae;
-  display:none;
-  margin-top:8px;
-}
+@media(max-width:600px){
+    .info-grid{
+        grid-template-columns:1fr;
+    }
 
-.err{
-  background:#351317;
-  padding:11px;
-  border-radius:10px;
-  color:#ffadb5;
-  display:none;
-  margin-top:8px;
-}
-
-.licenseOk{
-  background:#0d2a1a;
-  color:#91f0ae;
-  padding:12px;
-  border-radius:11px;
-  display:none;
-}
-
-@media(max-width:500px){
-  .row{
-    grid-template-columns:1fr;
-  }
-
-  .logo{
-    font-size:28px;
-  }
+    header h1{
+        font-size:23px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="wrap">
+<header>
+    <h1>🚗 CarInstall</h1>
+    <p>V7.5 • WebADB APK Installer</p>
+</header>
 
-<!-- HERO -->
-<div class="hero">
+<div class="container">
 
-  <div class="logo">🚗 CarInstall</div>
+    <!-- BAĞLANTI -->
+    <div class="card">
+        <h2>🔌 Araç Bağlantısı</h2>
 
-  <div class="sub">
-    Chery / Omoda • WebADB APK Installer
-  </div>
+        <button
+            id="connectBtn"
+            class="primary">
+            Cihaza Bağlan
+        </button>
 
-  <div class="version">
-    V7.4 • WEBSUB CLICK FIX • WEBUSB RETRY • APK INSTALLER
-  </div>
+        <button
+            id="disconnectBtn"
+            class="danger"
+            disabled>
+            Bağlantıyı Kes
+        </button>
 
-</div>
-
-
-<!-- AKTİVASYON -->
-<div class="card">
-
-  <h3>🔐 Aktivasyon</h3>
-
-  <div class="small">
-    Admin tarafından verilen aktivasyon kodunu girin.
-    Kod ilk kullanıldığı araçla eşleştirilir.
-  </div>
-
-  <input
-    id="activationCode"
-    placeholder="CI-XXXX-XXXX-XXXX"
-    autocomplete="off"
-  >
-
-  <button
-    id="activateBtn"
-    class="primary"
-  >
-    🔐 Aktivasyonu Kontrol Et
-  </button>
-
-  <div id="licenseResult" class="licenseOk"></div>
-
-</div>
-
-
-<!-- BAĞLANTI -->
-<div class="card">
-
-  <h3>🔌 Bağlantı</h3>
-
-  <div class="status">
-    <span id="dot" class="dot"></span>
-    <b id="status">Cihaz bağlı değil</b>
-  </div>
-
-  <button
-    id="connect"
-    class="primary"
-  >
-    Cihaza Bağlan
-  </button>
-
-  <button
-    id="disconnect"
-    class="red"
-    disabled
-  >
-    Bağlantıyı Kes
-  </button>
-
-  <button id="authorized">
-    Yetkili Cihazları Listele
-  </button>
-
-  <button id="wifi">
-    📶 Wi-Fi ADB Durumunu Kontrol Et
-  </button>
-
-  <div class="small">
-    Chrome/Edge ve HTTPS gereklidir.
-    İlk bağlantıda Android USB/RSA yetkilendirmesi istenebilir.
-  </div>
-
-</div>
-
-
-<!-- ARAÇ BİLGİLERİ -->
-<div class="card">
-
-  <h3>🚘 Araç Bilgileri</h3>
-
-  <div class="row">
-
-    <div class="box">
-      <div class="label">Model</div>
-      <div id="model" class="val">-</div>
+        <div id="connectionStatus"
+             class="status">
+            Bağlantı bekleniyor...
+        </div>
     </div>
 
-    <div class="box">
-      <div class="label">Android</div>
-      <div id="android" class="val">-</div>
+
+    <!-- ARAÇ BİLGİLERİ -->
+    <div class="card">
+        <h2>🚘 Araç Bilgileri</h2>
+
+        <div class="info-grid">
+
+            <div class="info">
+                <div class="label">Model</div>
+                <div id="model"
+                     class="value">-</div>
+            </div>
+
+            <div class="info">
+                <div class="label">Android</div>
+                <div id="android"
+                     class="value">-</div>
+            </div>
+
+            <div class="info">
+                <div class="label">CPU / ABI</div>
+                <div id="abi"
+                     class="value">-</div>
+            </div>
+
+            <div class="info">
+                <div class="label">SDK</div>
+                <div id="sdk"
+                     class="value">-</div>
+            </div>
+
+            <div class="info">
+                <div class="label">Ürün</div>
+                <div id="product"
+                     class="value">-</div>
+            </div>
+
+            <div class="info">
+                <div class="label">Cihaz</div>
+                <div id="device"
+                     class="value">-</div>
+            </div>
+
+        </div>
     </div>
 
-    <div class="box">
-      <div class="label">ABI</div>
-      <div id="abi" class="val">-</div>
+
+    <!-- LİSANS -->
+    <div class="card">
+        <h2>🔐 Aktivasyon</h2>
+
+        <input
+            id="activationCode"
+            placeholder="CI-XXXX-XXXX-XXXX">
+
+        <button
+            id="activateBtn"
+            class="success">
+            Aktivasyonu Kontrol Et
+        </button>
+
+        <div id="activationResult"
+             class="status">
+            Aktivasyon bekleniyor.
+        </div>
     </div>
 
-    <div class="box">
-      <div class="label">SDK</div>
-      <div id="sdk" class="val">-</div>
+
+    <!-- APK -->
+    <div class="card">
+        <h2>📦 APK Yükleyici</h2>
+
+        <div class="apk">
+
+            <div class="apk-title">
+                🧭 Yandex Navi
+            </div>
+
+            <div class="apk-desc">
+                Navigasyon uygulaması
+            </div>
+
+            <button
+                class="secondary"
+                onclick="downloadApk('yandex')">
+                APK İndir
+            </button>
+
+            <button
+                class="success"
+                onclick="installApk('yandex')"
+                disabled>
+                APK Yükle
+            </button>
+
+        </div>
+
+
+        <div class="apk">
+
+            <div class="apk-title">
+                🗺️ Google Maps
+            </div>
+
+            <div class="apk-desc">
+                Google navigasyon
+            </div>
+
+            <button
+                class="secondary"
+                onclick="downloadApk('maps')">
+                APK İndir
+            </button>
+
+            <button
+                class="success"
+                onclick="installApk('maps')"
+                disabled>
+                APK Yükle
+            </button>
+
+        </div>
+
     </div>
 
-  </div>
+
+    <!-- SHELL -->
+    <div class="card">
+
+        <h2>💻 ADB Shell</h2>
+
+        <input
+            id="shellCommand"
+            placeholder="Örn: getprop ro.product.model">
+
+        <button
+            id="shellBtn"
+            class="primary">
+            Komutu Çalıştır
+        </button>
+
+        <textarea
+            id="shellOutput"
+            readonly></textarea>
+
+    </div>
+
+
+    <!-- LOG -->
+    <div class="card">
+
+        <h2>📋 Sistem Logu</h2>
+
+        <div
+            id="log"
+            class="log">
+CarInstall V7.5 hazırlanıyor...
+        </div>
+
+        <button
+            id="clearLogBtn"
+            class="secondary">
+            Logları Temizle
+        </button>
+
+    </div>
 
 </div>
 
 
-<!-- WIFI ADB -->
-<div class="card">
-
-  <h3>📶 Wi-Fi ADB</h3>
-
-  <div class="small">
-    Araç IP adresini ve ADB portunu girebilirsiniz.
-    Android Chrome doğrudan TCP soketi açamadığı için gerçek
-    Wi-Fi ADB bağlantısında WebSocket köprüsü gerekir.
-  </div>
-
-  <input
-    id="wifiHost"
-    placeholder="Araç IP adresi, örn. 192.168.0.28"
-  >
-
-  <div class="row">
-
-    <input
-      id="wifiPort"
-      value="5555"
-      placeholder="ADB portu"
-    >
-
-    <input
-      id="wsUrl"
-      placeholder="WebSocket köprüsü"
-    >
-
-  </div>
-
-  <button
-    id="wifiTest"
-    class="primary"
-  >
-    📶 Wi-Fi ADB'yi Test Et
-  </button>
-
-  <button id="wifiForget">
-    🧹 Wi-Fi Bilgilerini Temizle
-  </button>
-
-  <div id="wifiResult" class="small">
-    Henüz test yapılmadı.
-  </div>
-
-</div>
-
-
-<!-- APK -->
-<div class="card">
-
-  <h3>📦 APK Kur</h3>
-
-  <label
-    class="file"
-    for="apk"
-  >
-    📁 APK Seç
-
-    <input
-      id="apk"
-      type="file"
-      accept=".apk,application/vnd.android.package-archive"
-    >
-
-    <b id="filename">
-      Dosya seçilmedi
-    </b>
-
-  </label>
-
-  <input
-    id="package"
-    placeholder="Paket adı, örn. com.example.app"
-  >
-
-  <label class="check">
-
-    <input
-      id="downgrade"
-      type="checkbox"
-    >
-
-    Daha düşük sürüme izin ver (-d)
-
-  </label>
-
-  <label class="check">
-
-    <input
-      id="replace"
-      type="checkbox"
-      checked
-    >
-
-    Kurulu uygulamayı güncelle (-r)
-
-  </label>
-
-  <label class="check">
-
-    <input
-      id="uninstall"
-      type="checkbox"
-    >
-
-    Önce uygulamayı kaldır, sonra kur
-
-  </label>
-
-  <button
-    id="install"
-    class="green"
-    disabled
-  >
-    ⬆️ APK'yı Araca Gönder ve Kur
-  </button>
-
-  <div class="progress">
-    <div
-      id="bar"
-      class="bar"
-    ></div>
-  </div>
-
-  <div
-    id="pt"
-    class="small"
-  >
-    Hazır
-  </div>
-
-  <div
-    id="ok"
-    class="ok"
-  >
-    ✅ Kurulum başarıyla tamamlandı.
-  </div>
-
-  <div
-    id="err"
-    class="err"
-  ></div>
-
-</div>
-
-
-<!-- İZİNLER -->
-<div class="card">
-
-  <h3>⚙️ İzin Verme</h3>
-
-  <input
-    id="grantPackage"
-    placeholder="Paket adı, örn. com.example.app"
-  >
-
-  <input
-    id="permission"
-    placeholder="İzin, örn. android.permission.WRITE_SECURE_SETTINGS"
-  >
-
-  <button id="grant">
-    İzni Ver
-  </button>
-
-  <div class="small">
-    Bazı sistem izinleri Android tarafından normal uygulamalara
-    verilmeyebilir.
-  </div>
-
-</div>
-
-
-<!-- SHELL -->
-<div class="card">
-
-  <h3>⌨️ ADB Shell</h3>
-
-  <input
-    id="shellCmd"
-    value="getprop ro.product.model"
-  >
-
-  <button
-    id="shellRun"
-    class="primary"
-  >
-    Çalıştır
-  </button>
-
-  <div
-    id="shellOut"
-    class="log"
-    style="min-height:60px"
-  ></div>
-
-</div>
-
-
-<!-- LOG -->
-<div class="card">
-
-  <h3>📋 Log</h3>
-
-  <div
-    id="log"
-    class="log"
-  >CarInstall V7.4 hazır.
-JavaScript başlatılması bekleniyor...</div>
-
-</div>
-
-
-<div class="card small">
-
-  <b>V7.4 Test Notu:</b><br>
-  Bu sürümde Cihaza Bağlan butonu çalıştığında Log bölümüne
-  mutlaka bağlantı başlangıç mesajı yazılır.
-  WebUSB cihaz seçimi açılmazsa hata ayrıca loglanır.
-
-</div>
-
-</div>
-
+<script src="https://carinstall.github.io/carinstall/license.js"></script>
 
 <script>
-
-/* =========================================================
-   CARINSTALL V7.4
-   ========================================================= */
-
-(function(){
 
 "use strict";
 
 
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 let transport = null;
 let adb = null;
-let selectedFile = null;
+let connected = false;
 let connectBusy = false;
 
-
-/* ---------------------------------------------------------
-   ELEMENT HELPER
-   --------------------------------------------------------- */
-
-function $(id){
-  return document.getElementById(id);
-}
+const logBox =
+    document.getElementById("log");
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    LOG
-   --------------------------------------------------------- */
+========================================================= */
 
 function log(message){
 
-  const el = $("log");
+    const now =
+        new Date().toLocaleTimeString();
 
-  if(!el){
-    return;
-  }
+    logBox.textContent +=
+        "\n" +
+        now +
+        "  " +
+        message;
 
-  const time =
-    new Date().toLocaleTimeString();
+    logBox.scrollTop =
+        logBox.scrollHeight;
 
-  el.textContent +=
-    "\n" +
-    time +
-    "  " +
-    String(message);
-
-  el.scrollTop =
-    el.scrollHeight;
+    console.log(message);
 }
 
 
-/* ---------------------------------------------------------
+function clearLog(){
+
+    logBox.textContent =
+        "Log temizlendi.";
+
+}
+
+
+document
+.getElementById("clearLogBtn")
+.addEventListener(
+    "click",
+    clearLog
+);
+
+
+/* =========================================================
    GLOBAL ERROR
-   --------------------------------------------------------- */
+========================================================= */
 
 window.addEventListener(
-  "error",
-  function(event){
+    "error",
+    function(e){
 
-    log(
-      "GLOBAL JS HATASI: " +
-      (event.message || "Bilinmeyen hata")
-    );
+        log(
+            "❌ GLOBAL ERROR: " +
+            e.message
+        );
 
-  }
+    }
 );
 
 
 window.addEventListener(
-  "unhandledrejection",
-  function(event){
+    "unhandledrejection",
+    function(e){
 
-    log(
-      "PROMISE HATASI: " +
-      (
-        event.reason?.message ||
-        event.reason ||
-        "Bilinmeyen hata"
-      )
-    );
+        log(
+            "❌ PROMISE ERROR: " +
+            (e.reason?.message ||
+             e.reason ||
+             "Bilinmeyen hata")
+        );
 
-  }
+    }
 );
 
 
-/* ---------------------------------------------------------
-   STATUS
-   --------------------------------------------------------- */
+/* =========================================================
+   START
+========================================================= */
 
-function setStatus(text,ok){
+log(
+    "CarInstall V7.5 hazır."
+);
 
-  $("status").textContent =
-    text;
-
-  $("dot").className =
-    ok
-      ? "dot ok"
-      : "dot";
-}
-
-
-/* ---------------------------------------------------------
-   PROGRESS
-   --------------------------------------------------------- */
-
-function progress(percent,text){
-
-  $("bar").style.width =
-    percent + "%";
-
-  $("pt").textContent =
-    text;
-}
-
-
-/* ---------------------------------------------------------
-   MESSAGE
-   --------------------------------------------------------- */
-
-function clearMessages(){
-
-  $("ok").style.display =
-    "none";
-
-  $("err").style.display =
-    "none";
-}
-
-
-function showError(message){
-
-  $("err").textContent =
-    "❌ " + message;
-
-  $("err").style.display =
-    "block";
-}
-
-
-/* ---------------------------------------------------------
-   SLEEP
-   --------------------------------------------------------- */
-
-function sleep(ms){
-
-  return new Promise(
-    resolve =>
-      setTimeout(resolve,ms)
-  );
-
-}
-
-
-/* ---------------------------------------------------------
-   CHECK WEBADB
-   --------------------------------------------------------- */
-
-function checkWebADB(){
-
-  if(
-    typeof window.Adb === "undefined"
-  ){
+if(window.Adb){
 
     log(
-      "❌ WebADB bulunamadı."
+        "WebADB global değişkeni hazır ✓"
     );
 
-    return false;
-  }
-
-  log(
-    "WebADB kütüphanesi bulundu."
-  );
-
-  return true;
-}
-
-
-/* ---------------------------------------------------------
-   CLOSE TRANSPORT
-   --------------------------------------------------------- */
-
-async function closeTransport(){
-
-  try{
-
-    if(adb && typeof adb.close === "function"){
-      await adb.close();
-    }
-
-  }catch(e){
+}else{
 
     log(
-      "ADB kapatma uyarısı: " +
-      e.message
+        "❌ WebADB bulunamadı."
     );
-
-  }
-
-
-  try{
-
-    if(
-      transport &&
-      typeof transport.close === "function"
-    ){
-
-      await transport.close();
-
-    }
-
-  }catch(e){
-
-    log(
-      "Transport kapatma uyarısı: " +
-      e.message
-    );
-
-  }
-
-
-  adb = null;
-  transport = null;
 
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
+   BUTTON
+========================================================= */
+
+const connectBtn =
+    document.getElementById(
+        "connectBtn"
+    );
+
+const disconnectBtn =
+    document.getElementById(
+        "disconnectBtn"
+    );
+
+
+connectBtn.addEventListener(
+    "click",
+    connect
+);
+
+
+disconnectBtn.addEventListener(
+    "click",
+    disconnect
+);
+
+
+/* =========================================================
    CONNECT
-   --------------------------------------------------------- */
+========================================================= */
 
 async function connect(){
 
-  if(connectBusy){
+    if(connectBusy){
 
-    log(
-      "Bağlantı işlemi zaten çalışıyor."
-    );
+        log(
+            "⚠️ Bağlantı işlemi zaten devam ediyor."
+        );
 
-    return;
-  }
-
-  connectBusy = true;
-
-  const button =
-    $("connect");
-
-  button.disabled = true;
-
-  clearMessages();
-
-  setStatus(
-    "Bağlanıyor...",
-    false
-  );
-
-  /*
-     EN ÖNEMLİ TEST MESAJI
-  */
-
-  log(
-    "BUTON ÇALIŞTI ✓"
-  );
-
-  log(
-    "WebADB bağlantısı başlatılıyor..."
-  );
-
-
-  try{
-
-    if(!checkWebADB()){
-
-      throw new Error(
-        "WebADB JavaScript yüklenmedi."
-      );
-
+        return;
     }
 
 
-    /*
-       Önce eski bağlantıyı tamamen temizle
-    */
+    connectBusy = true;
 
-    await closeTransport();
-
-
-    /*
-       Cihaz seçim penceresini aç
-    */
+    connectBtn.disabled = true;
 
     log(
-      "WebUSB cihaz seçimi açılıyor..."
+        "BUTON ÇALIŞTI ✓"
     );
 
-
-    transport =
-      await window.Adb.open(
-        "WebUSB"
-      );
-
-
     log(
-      "WebUSB açıldı."
-    );
-
-
-    /*
-       Android Chrome'daki USB state
-       geçişinin tamamlanmasını bekle
-    */
-
-    await sleep(800);
-
-
-    /*
-       ADB bağlantısı
-    */
-
-    log(
-      "ADB host bağlantısı kuruluyor..."
+        "WebADB bağlantısı başlatılıyor..."
     );
 
 
     try{
 
-      adb =
-        await transport.connectAdb(
-          "host::"
-        );
+        if(!window.Adb){
 
-    }catch(firstError){
+            throw new Error(
+                "WebADB kütüphanesi bulunamadı."
+            );
 
-      log(
-        "İlk ADB bağlantısı başarısız: " +
-        (
-          firstError.message ||
-          firstError
-        )
-      );
-
-
-      /*
-         InvalidStateError için yeniden deneme
-      */
-
-      if(
-        String(firstError.message)
-          .toLowerCase()
-          .includes("operation") ||
-        String(firstError.message)
-          .toLowerCase()
-          .includes("invalidstate")
-      ){
-
-        log(
-          "USB state kilidi algılandı."
-        );
-
-        log(
-          "Transport yeniden açılıyor..."
-        );
-
-
-        await closeTransport();
-
-        await sleep(1000);
+        }
 
 
         log(
-          "WebUSB yeniden açılıyor..."
+            "WebADB kütüphanesi bulundu."
+        );
+
+
+        /*
+         * ÖNEMLİ:
+         *
+         * Adb.open() SADECE BURADA çağrılıyor.
+         *
+         * Bu çağrı kullanıcı butonuna
+         * doğrudan bağlı.
+         */
+        log(
+            "WebUSB cihaz seçimi açılıyor..."
         );
 
 
         transport =
-          await window.Adb.open(
-            "WebUSB"
-          );
-
-
-        await sleep(1000);
+            await Adb.open("WebUSB");
 
 
         log(
-          "ADB bağlantısı yeniden deneniyor..."
+            "WebUSB açıldı ✓"
         );
 
 
-        adb =
-          await transport.connectAdb(
-            "host::"
-          );
-
-      }else{
-
-        throw firstError;
-
-      }
-
-    }
-
-
-    /*
-       BAĞLANDI
-    */
-
-    setStatus(
-      "Araç bağlı",
-      true
-    );
-
-    $("disconnect").disabled =
-      false;
-
-    $("install").disabled =
-      !selectedFile;
-
-
-    log(
-      "✅ ADB bağlantısı kuruldu."
-    );
-
-
-    /*
-       Araç bilgileri
-    */
-
-    await readVehicleInfo();
-
-
-  }catch(error){
-
-    setStatus(
-      "Bağlantı kurulamadı",
-      false
-    );
-
-    $("connect").disabled =
-      false;
-
-    log(
-      "❌ HATA: " +
-      (
-        error?.message ||
-        error
-      )
-    );
-
-
-    if(
-      error?.stack
-    ){
-
-      log(
-        error.stack
-      );
-
-    }
-
-
-    showError(
-      error?.message ||
-      String(error)
-    );
-
-  }finally{
-
-    connectBusy =
-      false;
-
-  }
-
-}
-
-
-/* ---------------------------------------------------------
-   DISCONNECT
-   --------------------------------------------------------- */
-
-async function disconnect(){
-
-  log(
-    "Bağlantı kapatılıyor..."
-  );
-
-  await closeTransport();
-
-  setStatus(
-    "Cihaz bağlı değil",
-    false
-  );
-
-  $("connect").disabled =
-    false;
-
-  $("disconnect").disabled =
-    true;
-
-  $("install").disabled =
-    true;
-
-  log(
-    "Bağlantı kapatıldı."
-  );
-
-}
-
-
-/* ---------------------------------------------------------
-   SHELL
-   --------------------------------------------------------- */
-
-async function shell(command){
-
-  if(!adb){
-
-    throw new Error(
-      "ADB bağlantısı yok."
-    );
-
-  }
-
-
-  if(
-    typeof adb.createShell === "function"
-  ){
-
-    const shellObject =
-      await adb.createShell(
-        command
-      );
-
-
-    /*
-       Bazı WebADB sürümlerinde
-       receive() kullanılır.
-    */
-
-    if(
-      typeof shellObject.receive ===
-      "function"
-    ){
-
-      const receiver =
-        await shellObject.receive();
-
-      let output = "";
-
-
-      if(
-        receiver &&
-        typeof receiver[Symbol.asyncIterator] ===
-        "function"
-      ){
-
-        for await(
-          const chunk of receiver
+        if(
+            transport &&
+            transport.device
         ){
 
-          output +=
-            decodeChunk(chunk);
+            log(
+                "USB cihaz: " +
+                (
+                    transport.device.productName ||
+                    "Bilinmiyor"
+                )
+            );
 
         }
 
-      }else if(
-        receiver &&
-        typeof receiver.getReader ===
-        "function"
-      ){
 
-        const reader =
-          receiver.getReader();
-
-        while(true){
-
-          const item =
-            await reader.read();
-
-          if(item.done){
-            break;
-          }
-
-          output +=
-            decodeChunk(item.value);
-
-        }
-
-      }
-
-
-      return output.trim();
-
-    }
-
-
-    /*
-       Reader API
-    */
-
-    if(
-      typeof shellObject.getReader ===
-      "function"
-    ){
-
-      const reader =
-        shellObject.getReader();
-
-      let output = "";
-
-      while(true){
-
-        const item =
-          await reader.read();
-
-        if(item.done){
-          break;
-        }
-
-        output +=
-          decodeChunk(item.value);
-
-      }
-
-      return output.trim();
-
-    }
-
-  }
-
-
-  throw new Error(
-    "WebADB shell API bulunamadı."
-  );
-
-}
-
-
-/* ---------------------------------------------------------
-   DECODE
-   --------------------------------------------------------- */
-
-function decodeChunk(chunk){
-
-  if(!chunk){
-    return "";
-  }
-
-  if(
-    typeof chunk === "string"
-  ){
-
-    return chunk;
-
-  }
-
-  if(
-    chunk instanceof Uint8Array ||
-    chunk instanceof ArrayBuffer
-  ){
-
-    return new TextDecoder()
-      .decode(chunk);
-
-  }
-
-  return String(chunk);
-
-}
-
-
-/* ---------------------------------------------------------
-   VEHICLE INFO
-   --------------------------------------------------------- */
-
-async function readVehicleInfo(){
-
-  log(
-    "Araç bilgileri okunuyor..."
-  );
-
-
-  const props = [
-
-    [
-      "model",
-      "getprop ro.product.model"
-    ],
-
-    [
-      "android",
-      "getprop ro.build.version.release"
-    ],
-
-    [
-      "abi",
-      "getprop ro.product.cpu.abilist"
-    ],
-
-    [
-      "sdk",
-      "getprop ro.build.version.sdk"
-    ]
-
-  ];
-
-
-  for(
-    const item of props
-  ){
-
-    try{
-
-      const value =
-        await shell(item[1]);
-
-      $(item[0]).textContent =
-        value || "-";
-
-      log(
-        item[0].toUpperCase() +
-        ": " +
-        (value || "-")
-      );
-
-    }catch(e){
-
-      log(
-        item[0].toUpperCase() +
-        " okunamadı: " +
-        e.message
-      );
-
-    }
-
-  }
-
-
-  /*
-     Aktivasyon için cihaz bilgilerini
-     hazırla
-  */
-
-  window.carInstallVehicleInfo = {
-
-    model:
-      $("model").textContent,
-
-    android:
-      $("android").textContent,
-
-    abi:
-      $("abi").textContent,
-
-    sdk:
-      $("sdk").textContent
-
-  };
-
-
-}
-
-
-/* ---------------------------------------------------------
-   APK SEÇ
-   --------------------------------------------------------- */
-
-$("apk").addEventListener(
-  "change",
-  function(event){
-
-    clearMessages();
-
-    selectedFile =
-      event.target.files?.[0] ||
-      null;
-
-
-    if(!selectedFile){
-
-      $("filename").textContent =
-        "Dosya seçilmedi";
-
-      $("install").disabled =
-        true;
-
-      return;
-
-    }
-
-
-    if(
-      !selectedFile.name
-        .toLowerCase()
-        .endsWith(".apk")
-    ){
-
-      selectedFile = null;
-
-      $("filename").textContent =
-        "Geçersiz APK";
-
-      $("install").disabled =
-        true;
-
-      return;
-
-    }
-
-
-    $("filename").textContent =
-      selectedFile.name +
-      " • " +
-      (
-        selectedFile.size /
-        1048576
-      ).toFixed(2) +
-      " MB";
-
-
-    $("install").disabled =
-      !adb;
-
-
-    log(
-      "APK seçildi: " +
-      selectedFile.name
-    );
-
-  }
-);
-
-
-/* ---------------------------------------------------------
-   APK PUSH
-   --------------------------------------------------------- */
-
-async function pushAPK(
-  file,
-  remote
-){
-
-  const bytes =
-    new Uint8Array(
-      await file.arrayBuffer()
-    );
-
-
-  /*
-     1. push API
-  */
-
-  if(
-    typeof adb.push ===
-    "function"
-  ){
-
-    try{
-
-      await adb.push(
-        file,
-        remote
-      );
-
-      return;
-
-    }catch(e){
-
-      log(
-        "push(file,path) başarısız: " +
-        e.message
-      );
-
-    }
-
-
-    try{
-
-      await adb.push(
-        bytes,
-        remote
-      );
-
-      return;
-
-    }catch(e){
-
-      log(
-        "push(bytes,path) başarısız: " +
-        e.message
-      );
-
-    }
-
-  }
-
-
-  /*
-     2. syncService
-  */
-
-  if(
-    typeof adb.syncService ===
-    "function"
-  ){
-
-    const sync =
-      await adb.syncService();
-
-
-    if(
-      sync &&
-      typeof sync.push ===
-      "function"
-    ){
-
-      await sync.push(
-        bytes,
-        remote
-      );
-
-      return;
-
-    }
-
-  }
-
-
-  throw new Error(
-    "WebADB APK push API bulunamadı."
-  );
-
-}
-
-
-/* ---------------------------------------------------------
-   INSTALL
-   --------------------------------------------------------- */
-
-$("install").addEventListener(
-  "click",
-  async function(){
-
-    clearMessages();
-
-    if(!adb){
-
-      showError(
-        "Önce araca bağlanın."
-      );
-
-      return;
-
-    }
-
-
-    if(!selectedFile){
-
-      showError(
-        "Önce APK seçin."
-      );
-
-      return;
-
-    }
-
-
-    $("install").disabled =
-      true;
-
-
-    const remote =
-      "/data/local/tmp/carinstall.apk";
-
-
-    try{
-
-      progress(
-        5,
-        "Hazırlanıyor..."
-      );
-
-
-      log(
-        "Eski geçici APK temizleniyor..."
-      );
-
-
-      try{
-
-        await shell(
-          "rm -f " + remote
-        );
-
-      }catch{}
-
-
-      progress(
-        15,
-        "APK araca gönderiliyor..."
-      );
-
-
-      await pushAPK(
-        selectedFile,
-        remote
-      );
-
-
-      progress(
-        70,
-        "APK gönderildi."
-      );
-
-
-      log(
-        "APK aktarımı tamamlandı."
-      );
-
-
-      const packageName =
-        $("package").value.trim();
-
-
-      if(
-        $("uninstall").checked &&
-        packageName
-      ){
+        /*
+         * requestDevice() tekrar çağrılmayacak.
+         *
+         * Aynı transport kullanılacak.
+         */
 
         log(
-          "Uygulama kaldırılıyor: " +
-          packageName
+            "ADB host bağlantısı kuruluyor..."
         );
+
 
         try{
 
-          await shell(
-            "pm uninstall " +
-            packageName
-          );
+            adb =
+                await transport.connectAdb(
+                    "host::"
+                );
 
-        }catch(e){
+        }catch(firstError){
 
-          log(
-            "Uninstall uyarısı: " +
-            e.message
-          );
+            log(
+                "⚠️ İlk ADB bağlantısı başarısız:"
+            );
+
+            log(
+                firstError.message ||
+                String(firstError)
+            );
+
+
+            /*
+             * V7.4'TEKİ HATA BURADAYDI:
+             *
+             * Adb.open("WebUSB") tekrar
+             * çağrılmıyordu.
+             *
+             * Çünkü requestDevice()
+             * tekrar kullanıcı hareketi ister.
+             *
+             * Bunun yerine aynı transport
+             * üzerinden ikinci kez
+             * connectAdb deneniyor.
+             */
+
+            if(
+                String(
+                    firstError.message ||
+                    ""
+                )
+                .toLowerCase()
+                .includes("operation")
+                ||
+                String(
+                    firstError.message ||
+                    ""
+                )
+                .toLowerCase()
+                .includes("state")
+            ){
+
+                log(
+                    "USB state problemi algılandı."
+                );
+
+                log(
+                    "Aynı WebUSB transport üzerinden tekrar deneniyor..."
+                );
+
+
+                await sleep(500);
+
+
+                try{
+
+                    adb =
+                        await transport.connectAdb(
+                            "host::"
+                        );
+
+                }catch(secondError){
+
+                    log(
+                        "❌ İkinci ADB denemesi de başarısız:"
+                    );
+
+                    log(
+                        secondError.message ||
+                        String(secondError)
+                    );
+
+                    throw secondError;
+                }
+
+            }else{
+
+                throw firstError;
+
+            }
 
         }
 
-      }
+
+        if(!adb){
+
+            throw new Error(
+                "ADB bağlantısı oluşturulamadı."
+            );
+
+        }
 
 
-      let flags = "";
+        connected = true;
+
+        connectBusy = false;
+
+        connectBtn.disabled = true;
+
+        disconnectBtn.disabled = false;
 
 
-      if(
-        $("replace").checked
-      ){
-
-        flags +=
-          " -r";
-
-      }
-
-
-      if(
-        $("downgrade").checked
-      ){
-
-        flags +=
-          " -d";
-
-      }
-
-
-      progress(
-        82,
-        "Android Package Manager çalışıyor..."
-      );
-
-
-      const result =
-        await shell(
-          "pm install" +
-          flags +
-          " " +
-          remote
-        );
-
-
-      log(
-        "pm install: " +
-        result
-      );
-
-
-      if(
-        !/Success/i.test(
-          result
+        document
+        .getElementById(
+            "connectionStatus"
         )
-      ){
+        .textContent =
+            "🟢 Araç bağlandı";
 
-        throw new Error(
-          result ||
-          "Kurulum sonucu alınamadı."
+
+        log(
+            "✅ ADB BAĞLANTISI BAŞARILI!"
         );
 
-      }
+
+        await readVehicleInfo();
 
 
-      try{
+    }catch(error){
 
-        await shell(
-          "rm -f " +
-          remote
-        );
+        connected = false;
 
-      }catch{}
+        connectBusy = false;
 
+        connectBtn.disabled = false;
 
-      progress(
-        100,
-        "Tamamlandı"
-      );
+        disconnectBtn.disabled = true;
 
 
-      $("ok").style.display =
-        "block";
-
-
-      log(
-        "✅ APK kurulumu tamamlandı."
-      );
-
-
-    }catch(e){
-
-      progress(
-        0,
-        "Başarısız"
-      );
-
-
-      showError(
-        e.message ||
-        String(e)
-      );
-
-
-      log(
-        "❌ Kurulum hatası: " +
-        (
-          e.message ||
-          e
+        document
+        .getElementById(
+            "connectionStatus"
         )
-      );
+        .textContent =
+            "🔴 Bağlantı başarısız";
 
 
-    }finally{
+        log(
+            "❌ HATA: " +
+            (
+                error.message ||
+                String(error)
+            )
+        );
 
-      $("install").disabled =
-        !adb ||
-        !selectedFile;
-
-    }
-
-  }
-);
-
-
-/* ---------------------------------------------------------
-   GRANT
-   --------------------------------------------------------- */
-
-$("grant").addEventListener(
-  "click",
-  async function(){
-
-    if(!adb){
-
-      log(
-        "Önce bağlanın."
-      );
-
-      return;
+        console.error(error);
 
     }
 
-
-    const pkg =
-      $("grantPackage")
-        .value
-        .trim();
-
-    const permission =
-      $("permission")
-        .value
-        .trim();
+}
 
 
-    if(!pkg || !permission){
+/* =========================================================
+   SLEEP
+========================================================= */
 
-      log(
-        "Paket adı ve izin gerekli."
-      );
+function sleep(ms){
 
-      return;
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
 
-    }
+}
+
+
+/* =========================================================
+   DISCONNECT
+========================================================= */
+
+async function disconnect(){
+
+    log(
+        "Bağlantı kesiliyor..."
+    );
 
 
     try{
 
-      const result =
-        await shell(
-          "pm grant " +
-          pkg +
-          " " +
-          permission
+        if(adb){
+
+            try{
+
+                if(
+                    typeof adb.close ===
+                    "function"
+                ){
+
+                    await adb.close();
+
+                }
+
+            }catch(e){
+
+                log(
+                    "ADB kapatma uyarısı: " +
+                    e.message
+                );
+
+            }
+
+        }
+
+
+        if(transport){
+
+            try{
+
+                if(
+                    typeof transport.close ===
+                    "function"
+                ){
+
+                    await transport.close();
+
+                }
+
+            }catch(e){
+
+                log(
+                    "Transport kapatma uyarısı: " +
+                    e.message
+                );
+
+            }
+
+        }
+
+    }finally{
+
+        adb = null;
+
+        transport = null;
+
+        connected = false;
+
+        connectBusy = false;
+
+        connectBtn.disabled = false;
+
+        disconnectBtn.disabled = true;
+
+
+        document
+        .getElementById(
+            "connectionStatus"
+        )
+        .textContent =
+            "Bağlantı kesildi.";
+
+
+        log(
+            "🔌 Bağlantı kesildi."
         );
-
-
-      log(
-        "İzin sonucu: " +
-        result
-      );
-
-    }catch(e){
-
-      log(
-        "İzin hatası: " +
-        e.message
-      );
 
     }
 
-  }
+}
+
+
+/* =========================================================
+   ADB SHELL
+========================================================= */
+
+document
+.getElementById("shellBtn")
+.addEventListener(
+    "click",
+    runShell
 );
 
 
-/* ---------------------------------------------------------
-   SHELL BUTTON
-   --------------------------------------------------------- */
-
-$("shellRun").addEventListener(
-  "click",
-  async function(){
+async function runShell(){
 
     if(!adb){
 
-      $("shellOut").textContent =
-        "ADB bağlantısı yok.";
+        log(
+            "❌ Önce araca bağlanın."
+        );
 
-      return;
-
+        return;
     }
 
 
     const command =
-      $("shellCmd")
+        document
+        .getElementById(
+            "shellCommand"
+        )
         .value
         .trim();
 
 
     if(!command){
 
-      return;
+        return;
 
     }
-
-
-    try{
-
-      $("shellOut").textContent =
-        await shell(command);
-
-    }catch(e){
-
-      $("shellOut").textContent =
-        "Hata: " +
-        e.message;
-
-    }
-
-  }
-);
-
-
-/* ---------------------------------------------------------
-   AUTHORIZED
-   --------------------------------------------------------- */
-
-$("authorized").addEventListener(
-  "click",
-  async function(){
-
-    if(!adb){
-
-      log(
-        "Önce bağlanın."
-      );
-
-      return;
-
-    }
-
-
-    try{
-
-      const result =
-        await shell(
-          "getprop ro.adb.secure"
-        );
-
-
-      log(
-        "ADB güvenlik durumu: " +
-        result
-      );
-
-    }catch(e){
-
-      log(
-        "ADB durum sorgusu: " +
-        e.message
-      );
-
-    }
-
-  }
-);
-
-
-/* ---------------------------------------------------------
-   WIFI STATUS
-   --------------------------------------------------------- */
-
-$("wifi").addEventListener(
-  "click",
-  async function(){
-
-    if(!adb){
-
-      log(
-        "Önce bağlanın."
-      );
-
-      return;
-
-    }
-
-
-    try{
-
-      const port =
-        await shell(
-          "getprop service.adb.tcp.port"
-        );
-
-
-      log(
-        "Wi-Fi ADB portu: " +
-        (port || "tanımsız")
-      );
-
-    }catch(e){
-
-      log(
-        "Wi-Fi ADB sorgusu: " +
-        e.message
-      );
-
-    }
-
-  }
-);
-
-
-/* ---------------------------------------------------------
-   WIFI STORAGE
-   --------------------------------------------------------- */
-
-function wifiLoad(){
-
-  $("wifiHost").value =
-    localStorage.getItem(
-      "carinstall_wifi_host"
-    ) || "";
-
-  $("wifiPort").value =
-    localStorage.getItem(
-      "carinstall_wifi_port"
-    ) || "5555";
-
-  $("wsUrl").value =
-    localStorage.getItem(
-      "carinstall_ws"
-    ) || "";
-
-}
-
-
-function wifiSave(){
-
-  localStorage.setItem(
-    "carinstall_wifi_host",
-    $("wifiHost").value.trim()
-  );
-
-  localStorage.setItem(
-    "carinstall_wifi_port",
-    $("wifiPort").value.trim()
-  );
-
-  localStorage.setItem(
-    "carinstall_ws",
-    $("wsUrl").value.trim()
-  );
-
-}
-
-
-wifiLoad();
-
-
-/* ---------------------------------------------------------
-   WIFI CLEAR
-   --------------------------------------------------------- */
-
-$("wifiForget").addEventListener(
-  "click",
-  function(){
-
-    localStorage.removeItem(
-      "carinstall_wifi_host"
-    );
-
-    localStorage.removeItem(
-      "carinstall_wifi_port"
-    );
-
-    localStorage.removeItem(
-      "carinstall_ws"
-    );
-
-
-    $("wifiHost").value =
-      "";
-
-    $("wifiPort").value =
-      "5555";
-
-    $("wsUrl").value =
-      "";
-
-
-    $("wifiResult").textContent =
-      "Wi-Fi bilgileri temizlendi.";
 
 
     log(
-      "Wi-Fi bilgileri temizlendi."
+        "SHELL > " +
+        command
     );
-
-  }
-);
-
-
-/* ---------------------------------------------------------
-   WIFI TEST
-   --------------------------------------------------------- */
-
-$("wifiTest").addEventListener(
-  "click",
-  async function(){
-
-    const host =
-      $("wifiHost")
-        .value
-        .trim();
-
-    const port =
-      $("wifiPort")
-        .value
-        .trim() ||
-      "5555";
-
-    const ws =
-      $("wsUrl")
-        .value
-        .trim();
-
-
-    wifiSave();
-
-
-    if(!host){
-
-      $("wifiResult").textContent =
-        "❌ Önce araç IP adresini gir.";
-
-      return;
-
-    }
-
-
-    $("wifiResult").textContent =
-      "⏳ Kontrol ediliyor...";
-
-
-    log(
-      "Wi-Fi ADB testi: " +
-      host +
-      ":" +
-      port
-    );
-
-
-    if(!ws){
-
-      $("wifiResult").textContent =
-        "⚠️ IP/port kaydedildi. " +
-        "Gerçek bağlantı için WebSocket ADB köprüsü gerekiyor.";
-
-      log(
-        "WebSocket köprüsü girilmedi."
-      );
-
-      return;
-
-    }
-
-
-    let socket =
-      null;
 
 
     try{
 
-      socket =
-        new WebSocket(ws);
+        /*
+         * WebADB sürümüne göre shell API'si
+         * farklı olabilir.
+         *
+         * Önce shell metodunu kontrol ediyoruz.
+         */
 
+        if(
+            typeof adb.createShell ===
+            "function"
+        ){
 
-      await new Promise(
-        function(resolve,reject){
-
-          const timer =
-            setTimeout(
-              function(){
-
-                reject(
-                  new Error(
-                    "WebSocket zaman aşımı"
-                  )
+            const shell =
+                await adb.createShell(
+                    command
                 );
 
-              },
-              8000
+            const output =
+                await readStream(
+                    shell
+                );
+
+            document
+            .getElementById(
+                "shellOutput"
+            )
+            .value =
+                output;
+
+            log(
+                "SHELL tamamlandı."
             );
 
-
-          socket.onopen =
-            function(){
-
-              clearTimeout(timer);
-
-              resolve();
-
-            };
-
-
-          socket.onerror =
-            function(){
-
-              clearTimeout(timer);
-
-              reject(
-                new Error(
-                  "WebSocket bağlantısı açılamadı"
-                )
-              );
-
-            };
+            return;
 
         }
-      );
 
 
-      socket.close();
+        if(
+            typeof adb.shell ===
+            "function"
+        ){
+
+            const result =
+                await adb.shell(
+                    command
+                );
+
+            const text =
+                result?.toString
+                    ? result.toString()
+                    : String(result);
 
 
-      $("wifiResult").textContent =
-        "✅ WebSocket köprüsüne erişilebiliyor.";
+            document
+            .getElementById(
+                "shellOutput"
+            )
+            .value =
+                text;
+
+            log(
+                "SHELL tamamlandı."
+            );
+
+            return;
+
+        }
 
 
-      log(
-        "WebSocket köprüsü erişilebilir."
-      );
+        throw new Error(
+            "Bu WebADB sürümünde shell API'si bulunamadı."
+        );
 
 
-    }catch(e){
+    }catch(error){
 
-      try{
-
-        socket?.close();
-
-      }catch{}
-
-
-      $("wifiResult").textContent =
-        "❌ Köprüye bağlanılamadı: " +
-        e.message;
-
-
-      log(
-        "Wi-Fi köprü hatası: " +
-        e.message
-      );
+        log(
+            "❌ Shell hatası: " +
+            (
+                error.message ||
+                String(error)
+            )
+        );
 
     }
 
-  }
+}
+
+
+/* =========================================================
+   STREAM OKUMA
+========================================================= */
+
+async function readStream(stream){
+
+    let output = "";
+
+
+    if(!stream){
+
+        return output;
+
+    }
+
+
+    if(
+        stream.readable &&
+        stream.readable.getReader
+    ){
+
+        const reader =
+            stream.readable.getReader();
+
+
+        while(true){
+
+            const {
+                value,
+                done
+            } =
+                await reader.read();
+
+
+            if(done){
+
+                break;
+
+            }
+
+
+            output +=
+                new TextDecoder()
+                .decode(value);
+
+        }
+
+
+        return output;
+
+    }
+
+
+    return String(stream);
+
+}
+
+
+/* =========================================================
+   VEHICLE INFO
+========================================================= */
+
+async function readVehicleInfo(){
+
+    log(
+        "Araç bilgileri okunuyor..."
+    );
+
+
+    const props = [
+
+        [
+            "ro.product.model",
+            "model"
+        ],
+
+        [
+            "ro.build.version.release",
+            "android"
+        ],
+
+        [
+            "ro.product.cpu.abilist",
+            "abi"
+        ],
+
+        [
+            "ro.build.version.sdk",
+            "sdk"
+        ],
+
+        [
+            "ro.product.name",
+            "product"
+        ],
+
+        [
+            "ro.product.device",
+            "device"
+        ]
+
+    ];
+
+
+    for(
+        const [property,id]
+        of props
+    ){
+
+        try{
+
+            const value =
+                await adbShell(
+                    "getprop " +
+                    property
+                );
+
+
+            document
+            .getElementById(id)
+            .textContent =
+                value.trim() ||
+                "-";
+
+
+        }catch(error){
+
+            log(
+                "⚠️ " +
+                property +
+                " okunamadı."
+            );
+
+        }
+
+    }
+
+
+    log(
+        "Araç bilgileri okundu ✓"
+    );
+
+}
+
+
+/* =========================================================
+   SIMPLE ADB SHELL
+========================================================= */
+
+async function adbShell(command){
+
+    if(!adb){
+
+        throw new Error(
+            "ADB bağlı değil."
+        );
+
+    }
+
+
+    if(
+        typeof adb.createShell ===
+        "function"
+    ){
+
+        const shell =
+            await adb.createShell(
+                command
+            );
+
+        return await readStream(
+            shell
+        );
+
+    }
+
+
+    if(
+        typeof adb.shell ===
+        "function"
+    ){
+
+        const result =
+            await adb.shell(
+                command
+            );
+
+        return result?.toString
+            ? result.toString()
+            : String(result);
+
+    }
+
+
+    throw new Error(
+        "ADB shell API bulunamadı."
+    );
+
+}
+
+
+/* =========================================================
+   APK DOWNLOAD
+========================================================= */
+
+const downloadedApks = {};
+
+
+function downloadApk(type){
+
+    /*
+     * BURAYA KENDİ APK SUNUCU ADRESLERİNİ
+     * KOYACAĞIZ.
+     *
+     * Örnek:
+     *
+     * https://site.com/apks/yandex.apk
+     */
+
+    const urls = {
+
+        yandex:
+            "https://YOUR-SERVER/apks/yandex.apk",
+
+        maps:
+            "https://YOUR-SERVER/apks/google-maps.apk"
+
+    };
+
+
+    const url =
+        urls[type];
+
+
+    if(
+        !url ||
+        url.includes("YOUR-SERVER")
+    ){
+
+        log(
+            "⚠️ APK sunucu adresi henüz tanımlanmadı."
+        );
+
+        return;
+
+    }
+
+
+    log(
+        "APK indiriliyor: " +
+        url
+    );
+
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+
+    a.download = "";
+
+    a.target = "_blank";
+
+    a.click();
+
+
+    downloadedApks[type] =
+        url;
+
+
+    log(
+        "APK indirme başlatıldı."
+    );
+
+}
+
+
+/* =========================================================
+   APK INSTALL
+========================================================= */
+
+async function installApk(type){
+
+    if(!adb){
+
+        log(
+            "❌ Önce araca bağlanın."
+        );
+
+        return;
+
+    }
+
+
+    const url =
+        downloadedApks[type];
+
+
+    if(!url){
+
+        log(
+            "❌ Önce APK'yı indirin."
+        );
+
+        return;
+
+    }
+
+
+    log(
+        "APK yükleme hazırlanıyor..."
+    );
+
+
+    /*
+     * Buradaki gerçek APK PUSH +
+     * pm install bölümü, mevcut V3.1
+     * WebADB push API'sine göre
+     * ayrıca bağlanacak.
+     */
+
+    log(
+        "⚠️ APK push motoru sonraki aşamada bağlanacak."
+    );
+
+}
+
+
+/* =========================================================
+   ACTIVATION
+========================================================= */
+
+document
+.getElementById(
+    "activateBtn"
+)
+.addEventListener(
+    "click",
+    activateLicense
 );
 
 
-/* ---------------------------------------------------------
-   ACTIVATION
-   --------------------------------------------------------- */
-
-$("activateBtn").addEventListener(
-  "click",
-  async function(){
+async function activateLicense(){
 
     const code =
-      $("activationCode")
+        document
+        .getElementById(
+            "activationCode"
+        )
         .value
-        .trim();
+        .trim()
+        .toUpperCase();
 
 
     if(!code){
 
-      $("licenseResult").style.display =
-        "block";
+        document
+        .getElementById(
+            "activationResult"
+        )
+        .textContent =
+            "Aktivasyon kodunu girin.";
 
-      $("licenseResult").textContent =
-        "❌ Aktivasyon kodu girin.";
-
-      return;
+        return;
 
     }
 
 
     try{
 
-      /*
-         Araç bilgileri alınmışsa kullan.
-         Henüz alınmadıysa mevcut alanları kullan.
-      */
+        let info = {
 
-      const info = {
+            model:
+                document
+                .getElementById(
+                    "model"
+                )
+                .textContent,
 
-        model:
-          $("model").textContent,
+            android:
+                document
+                .getElementById(
+                    "android"
+                )
+                .textContent,
 
-        android:
-          $("android").textContent,
+            abi:
+                document
+                .getElementById(
+                    "abi"
+                )
+                .textContent,
 
-        abi:
-          $("abi").textContent,
+            sdk:
+                document
+                .getElementById(
+                    "sdk"
+                )
+                .textContent
 
-        sdk:
-          $("sdk").textContent
-
-      };
-
-
-      if(
-        typeof window.carInstallActivate !==
-        "function"
-      ){
-
-        throw new Error(
-          "license.js yüklenemedi."
-        );
-
-      }
-
-
-      $("licenseResult").style.display =
-        "block";
-
-      $("licenseResult").textContent =
-        "⏳ Aktivasyon kontrol ediliyor...";
+        };
 
 
-      const result =
-        await window.carInstallActivate(
-          code,
-          info
-        );
+        if(
+            typeof carInstallActivate !==
+            "function"
+        ){
+
+            throw new Error(
+                "license.js yüklenemedi."
+            );
+
+        }
 
 
-      if(result?.ok){
+        const result =
+            await carInstallActivate(
+                code,
+                info
+            );
 
-        $("licenseResult").textContent =
-          "✅ Aktivasyon başarılı. Bu araç lisansa bağlandı.";
+
+        document
+        .getElementById(
+            "activationResult"
+        )
+        .textContent =
+            result?.message ||
+            "Aktivasyon başarılı.";
+
 
         log(
-          "Aktivasyon başarılı."
-        );
-
-      }else{
-
-        throw new Error(
-          result?.error ||
-          "Aktivasyon başarısız."
-        );
-
-      }
-
-    }catch(e){
-
-      $("licenseResult").style.display =
-        "block";
-
-      $("licenseResult").textContent =
-        "❌ " +
-        (
-          e.message ||
-          e
+            "🔐 Aktivasyon sonucu: " +
+            (
+                result?.message ||
+                "başarılı"
+            )
         );
 
 
-      log(
-        "Aktivasyon hatası: " +
-        (
-          e.message ||
-          e
+    }catch(error){
+
+        document
+        .getElementById(
+            "activationResult"
         )
-      );
+        .textContent =
+            "❌ " +
+            (
+                error.message ||
+                String(error)
+            );
+
+
+        log(
+            "❌ Aktivasyon hatası: " +
+            (
+                error.message ||
+                String(error)
+            )
+        );
 
     }
 
-  }
-);
-
-
-/* ---------------------------------------------------------
-   CONNECT / DISCONNECT
-   --------------------------------------------------------- */
-
-$("connect").addEventListener(
-  "click",
-  connect
-);
-
-
-$("disconnect").addEventListener(
-  "click",
-  disconnect
-);
-
-
-/* ---------------------------------------------------------
-   STARTUP
-   --------------------------------------------------------- */
-
-log(
-  "V7.4 JavaScript başlatıldı ✓"
-);
-
-
-if(
-  typeof window.Adb !==
-  "undefined"
-){
-
-  log(
-    "WebADB global değişkeni hazır ✓"
-  );
-
-}else{
-
-  log(
-    "⚠️ WebADB global değişkeni bulunamadı."
-  );
-
 }
-
-
-log(
-  "Cihaza Bağlan butonu hazır ✓"
-);
-
-
-})();
 
 </script>
 
