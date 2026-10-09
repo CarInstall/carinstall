@@ -109,6 +109,7 @@ async function loadCodes(){
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
 function renderCodes(list){
+
   const tbody=document.getElementById("codes");
   tbody.innerHTML="";
   if(!list.length){tbody.innerHTML="<tr><td colspan='5'>Henüz aktivasyon kodu yok.</td></tr>";return}
@@ -122,6 +123,7 @@ function renderCodes(list){
       <td>${esc(x.android_version||"-")}</td>
       <td><div class="row">
         <button class="alt" type="button" onclick="copyCode('${encodeURIComponent(x.code)}', this)">📋 Kopyala</button>
+        <button class="danger" onclick="deleteCode('${encodeURIComponent(x.code)}')">🗑️ Sil</button>
         ${disabled
           ? `<button class="success" onclick="enableCode('${encodeURIComponent(x.code)}')">Aktifleştir</button>`
           : `<button class="danger" onclick="disableCode('${encodeURIComponent(x.code)}')">Devre Dışı</button>`}
@@ -178,14 +180,32 @@ async function enableCode(code){
   if(!confirm("Bu kod tekrar aktifleştirilsin mi?"))return;
   await codeAction("/api/admin/codes/"+code+"/enable");
 }
+
+async function enableCode(code){
+  if(!confirm("Bu kod tekrar aktifleştirilsin mi?"))return;
+  await codeAction("/api/admin/codes/"+code+"/enable");
+}
+
+async function deleteCode(code){
+  const decodedCode = decodeURIComponent(code);
+  if(!confirm("DİKKAT! " + decodedCode + " kalıcı olarak silinsin mi?")) return;
+  await codeAction("/api/admin/codes/" + code + "/delete");
+}
+
 async function codeAction(path){
   try{
-    const r=await fetch(API+path,{method:"POST",headers:headers(),body:"{}"});
+    const r=await fetch(API+path,{
+      method:"POST",
+      headers:headers(),
+      body:"{}"
+    });
     const d=await r.json();
     if(r.status===401) return logout();
     if(!r.ok||!d.ok) throw new Error(d.error||"İşlem başarısız");
     await loadCodes();
-  }catch(e){status("actionStatus","❌ "+e.message)}
+  }catch(e){
+    status("actionStatus","❌ "+e.message);
+  }
 }
 
 if(token){showAdmin();loadCodes()}
