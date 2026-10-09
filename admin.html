@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarInstall Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#18212f}
+.wrap{max-width:1000px;margin:auto;padding:20px}
+.card{background:#fff;border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 5px 20px #00000012}
+h1{margin:0 0 6px}.muted{color:#687386}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,button{font:inherit;padding:12px;border-radius:10px;border:1px solid #ccd4df}
+input{width:100%}button{cursor:pointer;background:#111827;color:white;border:0;font-weight:700}
+button.alt{background:#e8edf4;color:#18212f}.danger{background:#b42318}.success{background:#087443}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hidden{display:none}
+.status{padding:10px;border-radius:10px;background:#eef2f7;margin-top:10px;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;margin-top:15px}th,td{text-align:left;padding:10px;border-bottom:1px solid #e7ebf0;font-size:14px}
+.code{font-family:monospace;font-size:18px;font-weight:800;letter-spacing:1px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{padding:12px}th,td{padding:7px;font-size:12px}.code{font-size:14px}.row button{padding:8px 10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>🔐 CarInstall Admin</h1>
+    <div class="muted">Aktivasyon kodlarını yönet</div>
+  </div>
+
+  <section id="loginCard" class="card">
+    <h2>Admin Girişi</h2>
+    <div class="grid">
+      <input id="username" placeholder="Admin kullanıcı adı" autocomplete="username">
+      <input id="password" type="password" placeholder="Admin şifresi" autocomplete="current-password">
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button onclick="login()">Giriş Yap</button>
+    </div>
+    <div id="loginStatus" class="status">Giriş yapılmadı.</div>
+  </section>
+
+  <section id="adminCard" class="hidden">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div><h2 style="margin:0">Aktivasyon Yönetimi</h2><div class="muted">Worker: nameless-darkness-1b75</div></div>
+        <button class="alt" onclick="logout()">Çıkış</button>
+      </div>
+      <div class="row" style="margin-top:16px">
+        <button class="success" onclick="createCode()">＋ Yeni Aktivasyon Kodu</button>
+        <button class="alt" onclick="loadCodes()">↻ Listeyi Yenile</button>
+      </div>
+      <div id="actionStatus" class="status">Hazır.</div>
+    </div>
+
+    <div class="card">
+      <h2>Aktivasyon Kodları</h2>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>Kod</th><th>Durum</th><th>Araç</th><th>Android</th><th>İşlem</th></tr></thead>
+          <tbody id="codes"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const API="https://nameless-darkness-1b75.mahmutfezlek.workers.dev";
+let token=sessionStorage.getItem("carinstall_admin_token")||"";
+
+function status(id,msg){document.getElementById(id).textContent=msg}
+function headers(){return {"Content-Type":"application/json","Authorization":"Bearer "+token}}
+
+async function login(){
+  const username=document.getElementById("username").value.trim();
+  const password=document.getElementById("password").value;
+  status("loginStatus","Giriş yapılıyor...");
+  try{
+    const r=await fetch(API+"/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
+    const d=await r.json();
+    if(!r.ok||!d.ok||!d.token) throw new Error(d.error||"Giriş başarısız");
+    token=d.token; sessionStorage.setItem("carinstall_admin_token",token);
+    showAdmin(); await loadCodes();
+  }catch(e){status("loginStatus","❌ "+e.message)}
+}
+
+function showAdmin(){
+  document.getElementById("loginCard").classList.add("hidden");
+  document.getElementById("adminCard").classList.remove("hidden");
+}
+function logout(){
+  token="";sessionStorage.removeItem("carinstall_admin_token");
+  document.getElementById("adminCard").classList.add("hidden");
+  document.getElementById("loginCard").classList.remove("hidden");
+  status("loginStatus","Çıkış yapıldı.");
+}
+
+async function loadCodes(){
+  status("actionStatus","Kodlar yükleniyor...");
+  try{
+    const r=await fetch(API+"/api/admin/codes",{headers:headers()});
+    const d=await r.json();
+    if(r.status===401) return logout();
+    if(!r.ok||!d.ok) throw new Error(d.error||"Liste alınamadı");
+    renderCodes(d.codes||[]);
+    status("actionStatus","Toplam "+(d.codes||[]).length+" aktivasyon kodu.");
+  }catch(e){status("actionStatus","❌ "+e.message)}
+}
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+function renderCodes(list){
+  const tbody=document.getElementById("codes");
+  tbody.innerHTML="";
+  if(!list.length){tbody.innerHTML="<tr><td colspan='5'>Henüz aktivasyon kodu yok.</td></tr>";return}
+  for(const x of list){
+    const disabled=String(x.status).toLowerCase()==="disabled";
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td class="code">${esc(x.code)}</td>
+      <td>${esc(x.status)}</td>
+      <td>${esc(x.vehicle_model||"-")}</td>
+      <td>${esc(x.android_version||"-")}</td>
+      <td><div class="row">
+        <button class="alt" type="button" onclick="copyCode('${encodeURIComponent(x.code)}', this)">📋 Kopyala</button>
+        ${disabled
+          ? `<button class="success" onclick="enableCode('${encodeURIComponent(x.code)}')">Aktifleştir</button>`
+          : `<button class="danger" onclick="disableCode('${encodeURIComponent(x.code)}')">Devre Dışı</button>`}
+      </div></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+
+async function copyCode(encodedCode, button){
+  const code = decodeURIComponent(encodedCode);
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(code);
+    }else{
+      const field = document.createElement("textarea");
+      field.value = code;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      const copied = document.execCommand("copy");
+      field.remove();
+      if(!copied) throw new Error("Tarayıcı kopyalamaya izin vermedi.");
+    }
+    const original = button.textContent;
+    button.textContent = "✅ Kopyalandı";
+    status("actionStatus", "📋 Aktivasyon kodu kopyalandı: " + code);
+    setTimeout(() => { button.textContent = original; }, 1600);
+  }catch(error){
+    status("actionStatus", "Kopyalama başarısız. Kodu seçip elle kopyalayın: " + code);
+  }
+}
+
+async function createCode(){
+  status("actionStatus","Yeni kod oluşturuluyor...");
+  try{
+    const r=await fetch(API+"/api/admin/codes",{method:"POST",headers:headers(),body:"{}"});
+    const d=await r.json();
+    if(r.status===401) return logout();
+    if(!r.ok||!d.ok) throw new Error(d.error||"Kod üretilemedi");
+    status("actionStatus","✅ Yeni kod: "+d.code);
+    await loadCodes();
+    alert("Yeni aktivasyon kodu:\n\n"+d.code);
+  }catch(e){status("actionStatus","❌ "+e.message)}
+}
+
+async function disableCode(code){
+  if(!confirm("Bu kod devre dışı bırakılsın mı?"))return;
+  await codeAction("/api/admin/codes/"+code+"/disable");
+}
+async function enableCode(code){
+  if(!confirm("Bu kod tekrar aktifleştirilsin mi?"))return;
+  await codeAction("/api/admin/codes/"+code+"/enable");
+}
+async function codeAction(path){
+  try{
+    const r=await fetch(API+path,{method:"POST",headers:headers(),body:"{}"});
+    const d=await r.json();
+    if(r.status===401) return logout();
+    if(!r.ok||!d.ok) throw new Error(d.error||"İşlem başarısız");
+    await loadCodes();
+  }catch(e){status("actionStatus","❌ "+e.message)}
+}
+
+if(token){showAdmin();loadCodes()}
+</script>
+</body>
+</html>
